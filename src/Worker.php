@@ -6,6 +6,8 @@ namespace App;
 
 use App\Service\Database;
 use App\Service\MailerService;
+use App\StateMachine\StateMachine;
+use App\StateMachine\Step\Mailer;
 
 class Worker
 {
@@ -22,8 +24,12 @@ class Worker
     {
         $users = $this->db->getAllUsers();
 
+
+
         foreach ($users as $user) {
             // TODO Create a StateMachine object and call ->start()
+            $stateMachine = new StateMachine($user,$this->mailer);
+            $stateMachine->start(new Mailer());
         }
 
         $this->db->saveUsers($users);
